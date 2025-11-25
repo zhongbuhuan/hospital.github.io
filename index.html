@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医院智能导航系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#36D399',
+                        warning: '#FBBD23',
+                        danger: '#F87272',
+                        neutral: '#F3F4F6',
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- 顶部挂号信息栏 -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center mb-2 md:mb-0">
+                <i class="fa fa-hospital-o text-primary text-2xl mr-3"></i>
+                <h1 class="text-xl font-bold text-gray-800">智慧医院导航</h1>
+            </div>
+            
+            <!-- 挂号信息卡片 -->
+            <div id="registration-card" class="bg-primary/5 border border-primary/20 rounded-lg p-3 flex flex-col md:flex-row items-start md:items-center">
+                <div class="flex items-center mr-4 mb-2 md:mb-0">
+                    <i class="fa fa-user-md text-primary mr-2"></i>
+                    <span class="font-medium">心内科 · 302诊室</span>
+                </div>
+                <div class="flex items-center mr-4 mb-2 md:mb-0">
+                    <i class="fa fa-clock-o text-primary mr-2"></i>
+                    <span>就诊时间：10:30-11:00</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fa fa-list-ol text-primary mr-2"></i>
+                    <span>当前序号：<span id="current-number">15</span>号 | 前方等待：<span id="waiting-count">3</span>人</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 py-6 flex flex-col lg:flex-row gap-6">
+        <!-- 导航地图区域 -->
+        <div class="bg-white rounded-xl shadow-md p-4 flex-1">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-gray-800">导航路径</h2>
+                <button class="bg-primary text-white px-3 py-1 rounded-md text-sm flex items-center">
+                    <i class="fa fa-refresh mr-1"></i> 重新规划
+                </button>
+            </div>
+            
+            <!-- 模拟地图 -->
+            <div class="bg-neutral rounded-lg h-[500px] flex flex-col items-center justify-center relative overflow-hidden">
+                <!-- 地图背景 -->
+                <div class="w-full h-full bg-[url('https://picsum.photos/800/500')] bg-cover bg-center opacity-30 absolute"></div>
+                
+                <!-- 导航路线 -->
+                <div class="relative z-10 flex flex-col items-center">
+                    <div class="bg-white rounded-full p-3 shadow-lg mb-6">
+                        <i class="fa fa-map-marker text-danger text-2xl"></i>
+                        <p class="text-sm mt-1">当前位置：一楼大厅</p>
+                    </div>
+                    
+                    <div class="w-0.5 h-20 bg-primary"></div>
+                    
+                    <div class="bg-white rounded-full p-3 shadow-lg mb-6">
+                        <i class="fa fa-arrow-right text-primary"></i>
+                        <p class="text-sm mt-1">直行50米</p>
+                    </div>
+                    
+                    <div class="w-0.5 h-20 bg-primary"></div>
+                    
+                    <div class="bg-white rounded-full p-3 shadow-lg mb-6">
+                        <i class="fa fa-arrow-up text-primary"></i>
+                        <p class="text-sm mt-1">上三楼</p>
+                    </div>
+                    
+                    <div class="w-0.5 h-20 bg-primary"></div>
+                    
+                    <div class="bg-secondary rounded-full p-3 shadow-lg">
+                        <i class="fa fa-flag text-white text-2xl"></i>
+                        <p class="text-sm mt-1 text-white">目的地：心内科302诊室</p>
+                    </div>
+                </div>
+                
+                <!-- 预计到达时间 -->
+                <div class="absolute bottom-4 bg-white/80 backdrop-blur-sm rounded-lg px-4 py-2 shadow-md">
+                    <i class="fa fa-hourglass-half text-warning mr-1"></i>
+                    <span>预计步行时间：3分钟</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 侧边信息栏 -->
+        <div class="w-full lg:w-80 flex flex-col gap-6">
+            <!-- 个人信息卡片 -->
+            <div class="bg-white rounded-xl shadow-md p-4">
+                <h2 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                    <i class="fa fa-id-card-o text-primary mr-2"></i>
+                    就诊人信息
+                </h2>
+                <div class="border-t pt-3">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-gray-500">姓名：</span>
+                        <span class="font-medium">张三</span>
+                    </div>
+                    <div class="flex justify-between mb-2">
+                        <span class="text-gray-500">就诊卡号：</span>
+                        <span class="font-medium">******1234</span>
+                    </div>
+                    <div class="flex justify-between mb-2">
+                        <span class="text-gray-500">医生姓名：</span>
+                        <span class="font-medium">李四 主任医师</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">挂号费用：</span>
+                        <span class="font-medium">¥50.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 叫号进度卡片 -->
+            <div class="bg-white rounded-xl shadow-md p-4">
+                <h2 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                    <i class="fa fa-bell-o text-primary mr-2"></i>
+                    叫号进度
+                </h2>
+                <div class="border-t pt-3">
+                    <div class="mb-4">
+                        <div class="flex justify-between mb-1">
+                            <span class="text-sm text-gray-500">当前叫号：12号</span>
+                            <span class="text-sm text-gray-500">更新于：<span id="update-time">10:25</span></span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-primary h-2 rounded-full" style="width: 80%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2 mb-4">
+                        <button class="flex-1 bg-primary text-white px-3 py-2 rounded-md text-sm flex items-center justify-center">
+                            <i class="fa fa-volume-up mr-1"></i> 播放叫号
+                        </button>
+                        <button class="flex-1 bg-gray-200 text-gray-700 px-3 py-2 rounded-md text-sm flex items-center justify-center">
+                            <i class="fa fa-refresh mr-1"></i> 刷新
+                        </button>
+                    </div>
+                    
+                    <div class="bg-warning/10 border border-warning/20 rounded-lg p-3 text-sm">
+                        <i class="fa fa-exclamation-circle text-warning mr-1"></i>
+                        <span>温馨提示：请提前5分钟到达诊室候诊区</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 功能按钮 -->
+            <div class="grid grid-cols-2 gap-3">
+                <button class="bg-white shadow-md rounded-xl p-4 flex flex-col items-center justify-center hover:bg-gray-50 transition">
+                    <i class="fa fa-phone text-primary text-xl mb-2"></i>
+                    <span class="text-sm">诊室咨询</span>
+                </button>
+                <button class="bg-white shadow-md rounded-xl p-4 flex flex-col items-center justify-center hover:bg-gray-50 transition">
+                    <i class="fa fa-calendar text-primary text-xl mb-2"></i>
+                    <span class="text-sm">预约挂号</span>
+                </button>
+                <button class="bg-white shadow-md rounded-xl p-4 flex flex-col items-center justify-center hover:bg-gray-50 transition">
+                    <i class="fa fa-stethoscope text-primary text-xl mb-2"></i>
+                    <span class="text-sm">科室介绍</span>
+                </button>
+                <button class="bg-white shadow-md rounded-xl p-4 flex flex-col items-center justify-center hover:bg-gray-50 transition">
+                    <i class="fa fa-question-circle text-primary text-xl mb-2"></i>
+                    <span class="text-sm">帮助中心</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部状态栏 -->
+    <footer class="bg-white shadow-inner mt-6 py-4">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <div class="text-sm text-gray-500">
+                <span>数据更新时间：<span id="footer-update-time">10:25:30</span></span>
+            </div>
+            <div class="flex gap-4">
+                <a href="#" class="text-sm text-gray-500 hover:text-primary">隐私政策</a>
+                <a href="#" class="text-sm text-gray-500 hover:text-primary">使用条款</a>
+                <a href="#" class="text-sm text-gray-500 hover:text-primary">联系我们</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 模拟数据实时刷新
+        function updateRegistrationData() {
+            // 模拟等待人数变化
+            const waitingCountEl = document.getElementById('waiting-count');
+            const currentNumberEl = document.getElementById('current-number');
+            const updateTimeEl = document.getElementById('update-time');
+            const footerUpdateTimeEl = document.getElementById('footer-update-time');
+            
+            // 随机减少等待人数（模拟叫号）
+            let waitingCount = parseInt(waitingCountEl.textContent);
+            if (waitingCount > 0 && Math.random() > 0.7) {
+                waitingCountEl.textContent = Math.max(0, waitingCount - 1);
+            }
+            
+            // 更新时间戳
+            const now = new Date();
+            const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+            const timeStrSec = `${timeStr}:${now.getSeconds().toString().padStart(2, '0')}`;
+            
+            updateTimeEl.textContent = timeStr;
+            footerUpdateTimeEl.textContent = timeStrSec;
+        }
+
+        // 每3分钟刷新一次数据（实际项目中应根据需要调整）
+        setInterval(updateRegistrationData, 3 * 60 * 1000);
+        
+        // 页面加载时立即更新一次
+        updateRegistrationData();
+    </script>
+</body>
+</html>
